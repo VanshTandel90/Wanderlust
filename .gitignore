@@ -4,6 +4,6 @@ node_modules/
 .DS_Store
 
 
-# git add.
+# git add .
 # git commit -m "msg"
 # git push origin main

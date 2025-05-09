@@ -124,3 +124,34 @@ body{
     padding-left: 0;
     padding-right: 0;
 }
+
+/* image edit */
+.edit-image{
+    height: 10rem;
+    width: 15rem;
+    display: flex;
+    background-size: cover;
+    border-radius: 10px;
+}
+/* .edit-image {
+    height: 10rem;
+    width: 15rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-position: center; 
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 10px;
+  } */
+
+
+
+
+
+  #cesiumContainer {
+    width: 100%;
+    height: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}

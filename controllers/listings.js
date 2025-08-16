@@ -1,14 +1,37 @@
 const Listing=require("../models/listing")
 
-
 module.exports.index=async (req,res)=>{
     const allListings=await Listing.find({})
     res.render("listings/index.ejs",{allListings})
 }
 
+module.exports.category = async (req, res) => {
+    const { category } = req.params;
+    const allListings = await Listing.find({ category: { $in: [category] } });
+    res.render("listings/index.ejs", { allListings });
+};
+
+module.exports.searchDestination = async (req, res) => {
+    const { destination } = req.body;
+    const regex = new RegExp(destination, 'i'); // case-insensitive search
+    const allListings = await Listing.find({
+        $or: [
+            { location: regex },
+            { country: regex }
+        ]
+    });
+    if(allListings.length==0){
+        req.flash("error","Listing you requested for does not exist")
+        res.redirect("/listings")
+    }
+    res.render("listings/index.ejs", { allListings });
+};
+
+
 module.exports.renderNewForm= (req,res)=>{
     res.render("listings/new.ejs")
 }
+
 
 module.exports.showListing=async(req,res)=>{
     let {id}=req.params

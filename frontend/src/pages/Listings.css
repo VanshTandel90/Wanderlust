@@ -1,0 +1,23 @@
+.create-listing-btn {
+  background-color: #ff5a5f;
+  border-color: #ff5a5f;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.create-listing-btn:hover {
+  background-color: #ff385c;
+  border-color: #ff385c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.create-listing-btn:active {
+  transform: translateY(0);
+}
+
+/* Add to existing CSS */

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust - Price Prediction Demo (No Flask)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #fe424d 0%, #ff6b6b 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #fe424d;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .image-preview img {
+            max-width: 300px;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #fe424d 0%, #ff6b6b 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .predicted-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #fe424d;
+            margin: 15px 0;
+        }
+
+        .confidence {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .instructions {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .instructions h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .demo-section {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .demo-section h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .demo-btn {
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .demo-btn:hover {
+            background: #f57c00;
+        }
+
+        .error {
+            background: #ffe6e6;
+            color: #d63031;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success {
+            background: #e6ffe6;
+            color: #27ae60;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧭 Wanderlust</h1>
+            <p>AI-Powered Price Prediction Demo (No Flask Required)</p>
+        </div>
+
+        <div class="form-container">
+            <div class="instructions">
+                <h3>📋 How to Use This Demo</h3>
+                <ol>
+                    <li><strong>Fill the form below</strong> with your property details</li>
+                    <li><strong>Download the form data</strong> as a JSON file</li>
+                    <li><strong>Run the Python script</strong> to get price prediction</li>
+                    <li><strong>View results</strong> in the terminal or output file</li>
+                </ol>
+            </div>
+
+            <div class="demo-section">
+                <h3>🚀 Quick Demo</h3>
+                <p>Try these pre-filled examples to see how it works:</p>
+                <div class="demo-buttons">
+                    <button class="demo-btn" onclick="fillDemo1()">🏠 Beach House</button>
+                    <button class="demo-btn" onclick="fillDemo2()">🏔️ Mountain Villa</button>
+                    <button class="demo-btn" onclick="fillDemo3()">🏙️ City Apartment</button>
+                    <button class="demo-btn" onclick="clearForm()">🗑️ Clear Form</button>
+                </div>
+            </div>
+
+            <form id="pricePredictionForm">
+                <div class="form-group">
+                    <label for="image">Upload Property Image</label>
+                    <input type="file" id="image" name="image" accept="image/*" required>
+                    <div class="image-preview">
+                        <img id="imagePreview" alt="Image preview">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="e.g., Kolak, Valsad" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" placeholder="e.g., India" required>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    📥 Download Form Data
+                </button>
+            </form>
+
+            <div class="success" id="success">
+                ✅ Form data downloaded successfully! Now run the Python script.
+            </div>
+
+            <div class="error" id="error"></div>
+
+            <div class="result-container" id="resultContainer">
+                <h3>Next Steps</h3>
+                <p>1. Save your image file to the Demo folder</p>
+                <p>2. Run this command in your terminal:</p>
+                <div class="code-block" id="commandOutput"></div>
+                <p>3. View the prediction results in the terminal</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Image preview functionality
+        document.getElementById('image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Demo data functions
+        function fillDemo1() {
+            document.getElementById('location').value = 'Goa Beach, Panaji';
+            document.getElementById('country').value = 'India';
+            document.getElementById('image').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+        }
+
+        function fillDemo2() {
+            document.getElementById('location').value = 'Manali, Himachal Pradesh';
+            document.getElementById('country').value = 'India';
+            document.getElementById('image').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+        }
+
+        function fillDemo3() {
+            document.getElementById('location').value = 'Mumbai, Maharashtra';
+            document.getElementById('country').value = 'India';
+            document.getElementById('image').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+        }
+
+        function clearForm() {
+            document.getElementById('pricePredictionForm').reset();
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('resultContainer').style.display = 'none';
+        }
+
+        // Form submission
+        document.getElementById('pricePredictionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const success = document.getElementById('success');
+            const error = document.getElementById('error');
+            const resultContainer = document.getElementById('resultContainer');
+            
+            // Hide previous messages
+            success.style.display = 'none';
+            error.style.display = 'none';
+            resultContainer.style.display = 'none';
+            
+            try {
+                const imageFile = document.getElementById('image').files[0];
+                const location = document.getElementById('location').value;
+                const country = document.getElementById('country').value;
+                
+                if (!imageFile || !location || !country) {
+                    throw new Error('Please fill all fields');
+                }
+                
+                // Create form data object
+                const formData = {
+                    image_filename: imageFile.name,
+                    location: location,
+                    country: country,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Create and download JSON file
+                const dataStr = JSON.stringify(formData, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'property_data.json';
+                link.click();
+                
+                URL.revokeObjectURL(url);
+                
+                // Show success message
+                success.style.display = 'block';
+                
+                // Show next steps
+                const commandOutput = document.getElementById('commandOutput');
+                commandOutput.textContent = `python run_prediction.py "${imageFile.name}" "${location}" "${country}"`;
+                resultContainer.style.display = 'block';
+                
+            } catch (err) {
+                error.textContent = 'Error: ' + err.message;
+                error.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 

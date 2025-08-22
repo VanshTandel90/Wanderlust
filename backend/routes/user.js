@@ -11,11 +11,9 @@ const userController=require("../controllers/users.js")
 router.get("/me", userController.checkAuth);
 
 router.route("/signup")
-    // .get(userController.renderSignupForm) // This is for EJS, not needed for React
     .post(wrapAsync(userController.signup));
 
 router.route("/login")
-    // .get(userController.renderLoginForm) // This is for EJS, not needed for React
     .post(
         saveRedirectUrl, 
         passport.authenticate("local", { failureMessage: true }), 

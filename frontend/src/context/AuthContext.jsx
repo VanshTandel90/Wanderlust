@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const checkUser = async () => {
             try {
-                // I need an endpoint to verify the current user from the session
                 const response = await axios.get('http://localhost:3000/api/me', {
                     headers: { 'Cache-Control': 'no-cache' },
                     withCredentials: true,
@@ -20,7 +19,6 @@ export const AuthProvider = ({ children }) => {
                     setUser(response.data);
                 }
             } catch (error) {
-                // No user is logged in, or server is down.
                 setUser(null);
             } finally {
                 setLoading(false);
@@ -37,8 +35,6 @@ export const AuthProvider = ({ children }) => {
 
     const signup = async (userData) => {
         const newUser = await apiSignup(userData);
-        // Optionally log the user in directly after signup
-        // setUser(newUser); 
         return newUser;
     };
 

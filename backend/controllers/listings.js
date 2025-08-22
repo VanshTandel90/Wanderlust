@@ -39,7 +39,7 @@ module.exports.searchDestination = async (req, res) => {
             ]
         });
         if (allListings.length == 0) {
-            return res.status(200).json([]); // Return empty array instead of 404
+            return res.status(200).json([]);
         }
         res.status(200).json(allListings);
     } catch (err) {
@@ -114,12 +114,8 @@ module.exports.updateListing = async (req, res) => {
         if (!listing) {
             return res.status(404).json({ error: "Listing you requested for does not exist" });
         }
-        
-        // Update text and other fields from req.body.listing
-        // The spread operator will overwrite existing fields with new data
         Object.assign(listing, req.body.listing);
         
-        // Handle file upload if a new file is provided
         if (req.file) {
             let url = req.file.path;
             let filename = req.file.filename;

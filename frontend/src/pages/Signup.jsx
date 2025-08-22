@@ -25,7 +25,6 @@ const Signup = () => {
     setError(null);
     try {
       await signup(formData);
-      // On successful signup, redirect to login so they can log in.
       navigate('/login');
     } catch (err) {
       setError(err.message || 'Failed to sign up. Please try again.');

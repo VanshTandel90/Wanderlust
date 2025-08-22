@@ -16,7 +16,6 @@ export const getAllListings = async () => {
     return response.data;
   } catch (error) {
     console.error("Error fetching listings:", error);
-    // Return empty array instead of throwing to make it easier to handle in components
     return [];
   }
 };
@@ -132,23 +131,17 @@ export const predictPrice = async (predictionData) => {
 // Update an existing listing
 export const updateListing = async (id, listingData) => {
   try {
-    // Create FormData for file upload
     const formData = new FormData();
-
-    // Add listing data to FormData
     for (const key in listingData) {
       if (key === "image" && listingData.image) {
-        // Only append image if it's a new file
         formData.append("listing[image]", listingData.image);
       } else if (key === 'category') {
-        // Handle category array properly
         if (Array.isArray(listingData.category)) {
           listingData.category.forEach(cat => {
             formData.append('listing[category][]', cat);
           });
         }
       } else if (key !== 'image') {
-        // Append all other fields, but ignore a null/empty image field
         formData.append(`listing[${key}]`, listingData[key]);
       }
     }

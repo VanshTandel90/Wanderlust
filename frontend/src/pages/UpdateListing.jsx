@@ -57,8 +57,7 @@ const UpdateListing = () => {
           setTimeout(() => navigate('/'), 2000);
           return;
         }
-        
-        // Ensure category is always an array
+
         const categories = Array.isArray(listing.category) ? listing.category : [];
 
         setFormData({
@@ -146,7 +145,6 @@ const UpdateListing = () => {
       
       await updateListing(id, formData);
       
-      // Redirect to listing detail page after successful update
       navigate(`/listings/${id}`);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to update listing');

@@ -30,7 +30,6 @@ const CategoryFilter = ({ onNearbyClick }) => {
           </div>
         ))}
 
-        {/* Tax Toggle */}
        {user && (
               <button className="btn col-12 col-md-auto mt-2 ms-auto tax-toggle" onClick={onNearbyClick}>
                 📍 Show Nearby Listings

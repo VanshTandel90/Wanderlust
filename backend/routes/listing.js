@@ -10,7 +10,6 @@ const multer=require("multer")
 const {storage}=require("../cloudConfig.js")
 const upload=multer({storage})
 
-// Add this import at the top of the file
 const axios = require('axios');
 
 
@@ -28,6 +27,7 @@ router.get("/new", isLoggedIn ,listingController.renderNewForm)
 //category
 router.get("/categories/:category",wrapAsync(listingController.category))
 
+//search
 router.post("/search",wrapAsync(listingController.searchDestination))
 
 router.get(
@@ -42,7 +42,7 @@ router.get(
 
       const allListings = await Listing.find({});
 
-      // Call the Python KNN service
+      // For calling the Python KNN service .....not other 
       const pythonResponse = await axios.post("http://localhost:8001/nearby", {
         user_location: user.location,
         listings: allListings,
@@ -75,11 +75,10 @@ router.route("/:id")
 // edit route
 router.get("/:id/edit",isLoggedIn , isOwner , wrapAsync(listingController.renderEditForm))
 
-// New route to predict price
+// predict price
 router.post("/predict-price", wrapAsync(async (req, res) => {
     try {
         const { location, country } = req.body;
-        // Forward the request to the Python microservice
         const pythonResponse = await axios.post('http://localhost:8001/predict-price', {
             location,
             country

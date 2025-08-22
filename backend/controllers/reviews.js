@@ -9,7 +9,6 @@ module.exports.createReview = async (req, res) => {
   await newReview.save();
   await listing.save();
 
-  // Populate author details before sending back
   const populatedReview = await Review.findById(newReview._id).populate('author');
   
   res.status(201).json(populatedReview);

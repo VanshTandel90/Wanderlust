@@ -212,7 +212,6 @@ const CreateListing = () => {
             {validation.price === false && <div className="invalid-feedback">Please provide a valid price</div>}
           </div>
 
-          {/* Corrected Location and Country form-row layout */}
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="location">Location</label>

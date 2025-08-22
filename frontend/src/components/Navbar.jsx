@@ -17,7 +17,6 @@ const Navbar = () => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchInput.trim()) {
-      // Navigate to search results page with the search term as a query parameter
       navigate(`/search?destination=${encodeURIComponent(searchInput.trim())}`);
       setSearchInput('');
       setIsExpanded(false);

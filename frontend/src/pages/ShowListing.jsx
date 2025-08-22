@@ -59,13 +59,10 @@ const ShowListing = () => {
         comment: reviewComment
       };
       
-      // Call the API to create a review
       const response = await createReview(id, reviewData);
       
-      // Refresh the listing data to include the new review
       setRefreshKey(oldKey => oldKey + 1);
       
-      // Reset form
       setReviewComment('');
       setReviewRating(3);
       
@@ -87,7 +84,6 @@ const ShowListing = () => {
       try {
         await deleteReview(id, reviewId);
         
-        // Refresh the listing data
         setRefreshKey(oldKey => oldKey + 1);
         
       } catch (err) {
@@ -98,7 +94,6 @@ const ShowListing = () => {
   };
 
   const handleLocationClick = () => {
-    // In a real implementation, this would use a mapping library
     alert(`Showing location: ${listing?.location}, ${listing?.country}`);
   };
 

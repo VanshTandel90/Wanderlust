@@ -2,8 +2,6 @@ const mongoose=require("mongoose")
 const Schema=mongoose.Schema
 const passportLocalMongoose=require("passport-local-mongoose")
 
-// username , hashing salting of password passport passport-local-mongoose j define kari dei ...
-
 const userSchema=new Schema({
     email:{
         type:String,
@@ -11,7 +9,7 @@ const userSchema=new Schema({
     },
     location: {
     type: String,
-    required: true, // Making it mandatory for new users
+    required: true, 
   },
 })
 

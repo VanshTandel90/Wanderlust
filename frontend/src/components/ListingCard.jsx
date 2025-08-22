@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import './ListingCard.css';
 
 const ListingCard = ({ listing, showTax }) => {
-    // Format price with fallback if not a number
   const formatPrice = (price) => {
     if (typeof price === 'number') {
       return price.toLocaleString("en-IN");

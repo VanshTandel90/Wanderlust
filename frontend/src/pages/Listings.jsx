@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getAllListings, getListingsByCategory, getNearbyListings } from '../api/listings'; // Import getNearbyListings
+import { getAllListings, getListingsByCategory, getNearbyListings } from '../api/listings';
 import ListingCard from '../components/ListingCard';
 import CategoryFilter from '../components/CategoryFilter';
 import './Listings.css';
@@ -12,9 +12,9 @@ const Listings = () => {
   const [error, setError] = useState(null);
   const [header, setHeader] = useState("All Listings");
   const { category } = useParams();
-  const { user } = useAuth(); // Get user from auth context
+  const { user } = useAuth(); 
 
-  // Function to fetch all or categorized listings
+
   const fetchDefaultListings = async () => {
     try {
       setLoading(true);
@@ -33,12 +33,10 @@ const Listings = () => {
     }
   };
 
-  // Fetch listings on component mount and when category changes
   useEffect(() => {
     fetchDefaultListings();
   }, [category]);
 
-  // Handler for the "Show Nearby Listings" button
   const handleNearbyClick = async () => {
     if (!user) {
       alert("Please log in to see listings near you.");

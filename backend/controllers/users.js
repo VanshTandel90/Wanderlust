@@ -4,7 +4,7 @@ module.exports.checkAuth = (req, res) => {
   if (!req.isAuthenticated()) {
     return res.status(401).json({ message: "Not authenticated" });
   }
-  // req.user is populated by Passport.js
+
   res.status(200).json(req.user);
 };
 
@@ -36,11 +36,3 @@ module.exports.logout = (req, res, next) => {
     res.status(200).json({ message: "Successfully logged out" });
   });
 };
-
-// These are no longer needed for the React frontend
-// module.exports.renderSignupForm=(req,res)=>{
-//     res.render("users/signup.ejs")
-// }
-// module.exports.renderLoginForm=(req,res)=>{
-//     res.render("users/login.ejs")
-// }

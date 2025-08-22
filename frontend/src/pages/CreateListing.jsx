@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createListing } from '../api/listings';
+import { createListing, predictPrice } from '../api/listings';
 import './CreateListing.css';
 
 const CATEGORIES = [
-  'Trending', 'Rooms', 'Iconic Cities', 'Mountains', 
+  'Trending', 'Rooms', 'Iconic Cities', 'Mountains',
   'Castles', 'Amazing Pools', 'Camping', 'Farms', 'Arctic', 'Boats'
 ];
 
 const CreateListing = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPredicting, setIsPredicting] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     title: '',
@@ -18,11 +19,10 @@ const CreateListing = () => {
     price: '',
     location: '',
     country: '',
-    category: ['Trending'], // Default category
+    category: ['Trending'],
     image: null
   });
 
-  // Form validation state
   const [validation, setValidation] = useState({
     title: false,
     description: false,
@@ -38,11 +38,11 @@ const CreateListing = () => {
       ...formData,
       [name]: value
     });
+    if (error) setError('');
   };
 
   const handleCategoryChange = (e) => {
     const { value, checked } = e.target;
-    
     if (checked) {
       setFormData({
         ...formData,
@@ -74,35 +74,62 @@ const CreateListing = () => {
       country: !!formData.country.trim(),
       image: !!formData.image
     };
-    
     setValidation(newValidation);
-    
     return Object.values(newValidation).every(isValid => isValid);
+  };
+
+  const handlePredictPrice = async () => {
+    if (!formData.location || !formData.country) {
+      setError('Please fill in the Location and Country fields first.');
+      return;
+    }
+    if (formData.country.toLowerCase() !== 'india') {
+      setError('Prediction is only available for India.');
+      return;
+    }
+
+    try {
+      setIsPredicting(true);
+      setError('');
+
+      const prediction = await predictPrice({
+        location: formData.location,
+        country: formData.country,
+      });
+
+      setFormData({
+        ...formData,
+        price: prediction.predicted_price.toFixed(2)
+      });
+    } catch (err) {
+      setError(err.message || 'Failed to get price prediction.');
+      console.error(err);
+    } finally {
+      setIsPredicting(false);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       setError('Please fill all required fields correctly');
       return;
     }
-    
+
     try {
       setIsSubmitting(true);
       setError('');
-      
+
       const response = await createListing(formData);
-      
-      // Redirect to the new listing's detail page after successful creation
+
       if (response && response.listing && response.listing._id) {
         navigate(`/listings/${response.listing._id}`);
       } else {
-        // Fallback if the response format is unexpected
         navigate('/');
       }
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to create listing');
+      setError(err.message || 'Failed to create listing');
     } finally {
       setIsSubmitting(false);
     }
@@ -112,9 +139,8 @@ const CreateListing = () => {
     <div className="create-listing-container">
       <div className="create-listing-form-container">
         <h2>Create New Listing</h2>
-        
         {error && <div className="error-message">{error}</div>}
-        
+
         <form onSubmit={handleSubmit} className="create-listing-form" noValidate>
           <div className="form-group">
             <label htmlFor="title">Title</label>
@@ -128,9 +154,7 @@ const CreateListing = () => {
               className={validation.title === false ? 'invalid' : ''}
               required
             />
-            {validation.title === false && 
-              <div className="invalid-feedback">Please provide a title</div>
-            }
+            {validation.title === false && <div className="invalid-feedback">Please provide a title</div>}
           </div>
 
           <div className="form-group">
@@ -144,9 +168,7 @@ const CreateListing = () => {
               className={validation.description === false ? 'invalid' : ''}
               required
             />
-            {validation.description === false && 
-              <div className="invalid-feedback">Please provide a description</div>
-            }
+            {validation.description === false && <div className="invalid-feedback">Please provide a description</div>}
           </div>
 
           <div className="form-group">
@@ -160,30 +182,52 @@ const CreateListing = () => {
               className={validation.image === false ? 'invalid' : ''}
               required
             />
-            {validation.image === false && 
-              <div className="invalid-feedback">Please upload an image</div>
-            }
+            {validation.image === false && <div className="invalid-feedback">Please upload an image</div>}
           </div>
 
+          {/* Corrected Price group layout */}
+          <div className="form-group">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label htmlFor="price">Price (per night)</label>
+              <button
+                type="button"
+                onClick={handlePredictPrice}
+                disabled={isPredicting || !formData.location || !formData.country}
+                className="btn btn-primary"
+              >
+                {isPredicting ? 'Predicting...' : 'Predict Price'}
+              </button>
+            </div>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={handleInputChange}
+              placeholder="e.g., 99"
+              min="1"
+              className={validation.price === false ? 'invalid' : ''}
+              required
+            />
+            {validation.price === false && <div className="invalid-feedback">Please provide a valid price</div>}
+          </div>
+
+          {/* Corrected Location and Country form-row layout */}
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="price">Price (per night)</label>
+              <label htmlFor="location">Location</label>
               <input
-                type="number"
-                id="price"
-                name="price"
-                value={formData.price}
+                type="text"
+                id="location"
+                name="location"
+                value={formData.location}
                 onChange={handleInputChange}
-                placeholder="99"
-                min="1"
-                className={validation.price === false ? 'invalid' : ''}
+                placeholder="e.g., New Delhi"
+                className={validation.location === false ? 'invalid' : ''}
                 required
               />
-              {validation.price === false && 
-                <div className="invalid-feedback">Please provide a valid price</div>
-              }
+              {validation.location === false && <div className="invalid-feedback">Please provide a location</div>}
             </div>
-
             <div className="form-group">
               <label htmlFor="country">Country</label>
               <input
@@ -196,27 +240,8 @@ const CreateListing = () => {
                 className={validation.country === false ? 'invalid' : ''}
                 required
               />
-              {validation.country === false && 
-                <div className="invalid-feedback">Please provide a country</div>
-              }
+              {validation.country === false && <div className="invalid-feedback">Please provide a country</div>}
             </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="location">Location</label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={handleInputChange}
-              placeholder="Kolak, Valsad"
-              className={validation.location === false ? 'invalid' : ''}
-              required
-            />
-            {validation.location === false && 
-              <div className="invalid-feedback">Please provide a location</div>
-            }
           </div>
 
           <div className="form-group categories-group">
@@ -238,8 +263,8 @@ const CreateListing = () => {
             </div>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="create-btn"
             disabled={isSubmitting}
           >

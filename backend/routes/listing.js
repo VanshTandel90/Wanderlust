@@ -9,6 +9,10 @@ const multer=require("multer")
 const {storage}=require("../cloudConfig.js")
 const upload=multer({storage})
 
+// Add this import at the top of the file
+const axios = require('axios');
+
+
 
 router.route("/")
     // index route
@@ -35,5 +39,23 @@ router.route("/:id")
 
 // edit route
 router.get("/:id/edit",isLoggedIn , isOwner , wrapAsync(listingController.renderEditForm))
+
+// New route to predict price
+router.post("/predict-price", wrapAsync(async (req, res) => {
+    try {
+        const { location, country } = req.body;
+        // Forward the request to the Python microservice
+        const pythonResponse = await axios.post('http://localhost:8001/predict-price', {
+            location,
+            country
+        });
+        res.status(200).json(pythonResponse.data);
+    } catch (err) {
+        console.error("Error calling Python service:", err.response?.data || err.message);
+        res.status(err.response?.status || 500).json({ 
+            error: err.response?.data?.error || "Failed to get price prediction from Python service."
+        });
+    }
+}));
 
 module.exports=router

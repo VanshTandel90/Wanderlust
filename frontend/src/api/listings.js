@@ -119,6 +119,16 @@ export const createListing = async (listingData) => {
   }
 };
 
+export const predictPrice = async (predictionData) => {
+  try {
+    const response = await api.post('/listings/predict-price', predictionData);
+    return response.data;
+  } catch (error) {
+    console.error('Error predicting price:', error.response?.data || error.message);
+    throw error.response?.data || error;
+  }
+};
+
 // Update an existing listing
 export const updateListing = async (id, listingData) => {
   try {

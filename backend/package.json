@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "Backend API for Wanderlust application",
   "dependencies": {
+    "axios": "^1.11.0",
     "cesium": "^1.129.0",
     "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",

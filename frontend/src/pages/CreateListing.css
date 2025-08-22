@@ -242,3 +242,18 @@ input[type="file"]::-webkit-file-upload-button {
 input[type="file"]::-webkit-file-upload-button:hover {
   background-color: #ff385c;
 }
+
+/* Add this to the end of the file */
+/* --- Override Browser Autofill Styles --- */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #fff8f8 inset !important; /* Keeps background white */
+    -webkit-text-fill-color: #333 !important; /* Keeps text color dark */
+    transition: background-color 5000s ease-in-out 0s; /* Prevents color change animation */
+}

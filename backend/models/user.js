@@ -9,6 +9,10 @@ const userSchema=new Schema({
         type:String,
         required:true
     },
+    location: {
+    type: String,
+    required: true, // Making it mandatory for new users
+  },
 })
 
 userSchema.plugin(passportLocalMongoose)

@@ -1,46 +1,62 @@
 import { useState, useEffect } from 'react';
-import { useParams , Link } from 'react-router-dom';
-import { getAllListings, getListingsByCategory } from '../api/listings';
+import { useParams, Link } from 'react-router-dom';
+import { getAllListings, getListingsByCategory, getNearbyListings } from '../api/listings'; // Import getNearbyListings
 import ListingCard from '../components/ListingCard';
 import CategoryFilter from '../components/CategoryFilter';
 import './Listings.css';
+import { useAuth } from '../context/AuthContext';
 
 const Listings = () => {
-
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [header, setHeader] = useState("All Listings");
   const { category } = useParams();
-  const [showTax, setShowTax] = useState(false);
+  const { user } = useAuth(); // Get user from auth context
 
+  // Function to fetch all or categorized listings
+  const fetchDefaultListings = async () => {
+    try {
+      setLoading(true);
+      setHeader(category ? `Category: ${category}` : "All Listings");
+      const data = category
+        ? await getListingsByCategory(category)
+        : await getAllListings();
+      setListings(data || []);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching default listings:', err);
+      setError('Failed to fetch listings. Please try again later.');
+      setListings([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch listings on component mount and when category changes
   useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        setLoading(true);
-        let data;
-        
-        if (category) {
-          data = await getListingsByCategory(category);
-        } else {
-          data = await getAllListings();
-        }
-        
-        setListings(data || []);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching listings:', err);
-        setError('Failed to fetch listings. Please try again later.');
-        setListings([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchListings();
+    fetchDefaultListings();
   }, [category]);
 
-  const handleTaxToggle = (isChecked) => {
-    setShowTax(isChecked);
+  // Handler for the "Show Nearby Listings" button
+  const handleNearbyClick = async () => {
+    if (!user) {
+      alert("Please log in to see listings near you.");
+      return;
+    }
+    try {
+      setLoading(true);
+      setHeader("Listings Near You");
+      const data = await getNearbyListings();
+      setListings(data.nearby_listings || []);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching nearby listings:', err);
+      setError('Could not fetch nearby listings. Please try again.');
+      setListings([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -53,30 +69,26 @@ const Listings = () => {
 
   return (
     <div className="container-fluid p-0">
-      <CategoryFilter onTaxToggle={handleTaxToggle} />
+      <CategoryFilter onNearbyClick={handleNearbyClick} />
       
       <div className="container mt-4">
         <div className="d-flex justify-content-between align-items-center mb-4">
-          {category && <h3>Category: {category}</h3>}
-          {!category && <h3>All Listings</h3>}
+          <h3>{header}</h3>
           <Link to="/listings/new" className="btn btn-primary create-listing-btn">
             <span className="me-2">➕</span> Add New Listing
           </Link>
         </div>
         <div className="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
-          {listings && listings.length > 0 ? (
+          {listings.length > 0 ? (
             listings.map(listing => (
               <div key={listing._id} className="col">
-                <ListingCard listing={listing} showTax={showTax} />
+                <ListingCard listing={listing} />
               </div>
             ))
           ) : (
             <div className="col-12 text-center my-5">
               <h3>No listings found</h3>
-              {category && <p>No listings found for category: {category}</p>}
-              <Link to="/listings/new" className="btn btn-primary mt-3">
-                Create Your First Listing
-              </Link>
+              <p>Try a different search, category, or <Link to="/">view all listings</Link>.</p>
             </div>
           )}
         </div>

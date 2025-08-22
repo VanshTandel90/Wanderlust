@@ -8,6 +8,7 @@ const Signup = () => {
     username: '',
     email: '',
     password: '',
+    location: '',
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -61,6 +62,20 @@ const Signup = () => {
                 className="form-control"
                 value={formData.email}
                 onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="location" className="form-label">Location (e.g., City, Country)</label>
+              <input
+                name="location"
+                id="location"
+                type="text"
+                className="form-control"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="e.g., Surat, India"
                 required
               />
             </div>

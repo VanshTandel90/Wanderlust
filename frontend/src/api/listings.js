@@ -177,6 +177,16 @@ export const deleteListing = async (id) => {
   }
 };
 
+export const getNearbyListings = async () => {
+  try {
+    const response = await api.get("/listings/nearby");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching nearby listings:", error.response?.data || error.message);
+    throw error.response?.data || error;
+  }
+};
+
 export default {
   getAllListings,
   getListingById,
@@ -187,4 +197,5 @@ export default {
   deleteListing,
   createReview,
   deleteReview,
+  getNearbyListings,
 };

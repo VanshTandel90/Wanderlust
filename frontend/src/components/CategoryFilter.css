@@ -36,6 +36,11 @@
   align-items: center; 
 }
 
+.tax-toggle:hover{
+  background-color: lightgray;
+  border: 1px solid black; 
+}
+
 .tax-label {
   font-size: 0.7rem;
   margin-left: 0.5rem;

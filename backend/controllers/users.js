@@ -10,8 +10,8 @@ module.exports.checkAuth = (req, res) => {
 
 module.exports.signup = async (req, res, next) => {
   try {
-    let { username, email, password } = req.body;
-    const newUser = new User({ email, username });
+    let { username, email, password, location } = req.body;
+    const newUser = new User({ email, username, location });
     const registeredUser = await User.register(newUser, password);
     req.login(registeredUser, (err) => {
       if (err) {
@@ -20,13 +20,11 @@ module.exports.signup = async (req, res, next) => {
       return res.status(201).json(registeredUser);
     });
   } catch (e) {
-    // Forward error to the error handling middleware
     next(e);
   }
 };
 
 module.exports.login = async (req, res) => {
-  // `req.user` is available after passport.authenticate middleware runs
   res.status(200).json(req.user);
 };
 

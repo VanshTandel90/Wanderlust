@@ -4,6 +4,7 @@ const wrapAsync=require("../utils/wrapAsync.js")
 const Listing=require("../models/listing.js")
 const {isLoggedIn, isOwner, validateListing}=require("../middleware.js")
 
+const User = require("../models/user.js");
 const listingController=require("../controllers/listings.js")
 const multer=require("multer")
 const {storage}=require("../cloudConfig.js")
@@ -28,6 +29,40 @@ router.get("/new", isLoggedIn ,listingController.renderNewForm)
 router.get("/categories/:category",wrapAsync(listingController.category))
 
 router.post("/search",wrapAsync(listingController.searchDestination))
+
+router.get(
+  "/nearby",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id);
+      if (!user || !user.location) {
+        return res.status(400).json({ error: "User location not found." });
+      }
+
+      const allListings = await Listing.find({});
+
+      // Call the Python KNN service
+      const pythonResponse = await axios.post("http://localhost:8001/nearby", {
+        user_location: user.location,
+        listings: allListings,
+      });
+
+      res.status(200).json(pythonResponse.data);
+      
+    } catch (err) {
+      console.error(
+        "Error calling Python service:",
+        err.response?.data || err.message
+      );
+      res.status(err.response?.status || 500).json({
+        error:
+          err.response?.data?.error ||
+          "Failed to get nearby listings from Python service.",
+      });
+    }
+  })
+);
 
 router.route("/:id")
     // show route

@@ -72,7 +72,7 @@ const Navbar = () => {
           )}
 
           <div className="navbar-nav ms-auto">
-            <Link className="nav-link" to="/listings/new">Airbnb your home</Link>
+            {/* <Link className="nav-link" to="/listings/new">Airbnb your home</Link> */}
             {!loading && (
               user ? (
                 <>

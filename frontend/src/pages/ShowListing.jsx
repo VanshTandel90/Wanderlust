@@ -172,12 +172,12 @@ const ShowListing = () => {
             </div>
           )}
           
-          <div className="map-section mb-4">
+          {/* <div className="map-section mb-4">
             <h4 className="mb-3">Where you'll be</h4>
             <div className="map-container">
               <Map locationString={locationString} />
             </div>
-          </div>
+          </div> */}
           
           <hr />
           

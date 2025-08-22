@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="f-info">
         <div className="f-info-brand">
-          <span>&copy; 2023 Wanderlust</span>
+          <span>&copy; 2025 RentEasy</span>
         </div>
         <div className="f-info-links">
           <a href="/privacy">Privacy</a>

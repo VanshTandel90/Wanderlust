@@ -73,7 +73,7 @@ app.use((req, res, next) => {
 
 // API Routes
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Wanderlust API" });
+  res.json({ message: "Welcome to RentEasy API" });
 });
 
 app.use("/api/listings", listingRouter);

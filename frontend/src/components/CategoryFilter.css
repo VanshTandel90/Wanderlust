@@ -7,6 +7,8 @@
 .filter:hover {
   opacity: 1; 
   cursor: pointer;
+  background-color: lightgray;
+  border-radius: 200px;
 }
 
 .filter p {

@@ -36,7 +36,7 @@ const Signup = () => {
   return (
     <div className="signup-container">
       <div className="row mt-3">
-        <h1 className="col-12 col-md-6 offset-md-3">Sign Up for Wanderlust</h1>
+        <h1 className="col-12 col-md-6 offset-md-3">Sign Up for RentEasy</h1>
         <div className="col-12 col-md-6 offset-md-3">
           <form onSubmit={handleSubmit} noValidate>
             <div className="mb-3">

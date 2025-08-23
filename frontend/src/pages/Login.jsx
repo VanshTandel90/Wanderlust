@@ -37,7 +37,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="row mt-3">
-        <h1 className="col-12 col-md-6 offset-md-3">Login</h1>
+        <h2 className="col-12 col-md-6 offset-md-3">Login</h2>
         <div className="col-12 col-md-6 offset-md-3">
           <form onSubmit={handleSubmit} noValidate>
             <div className="mb-3">
@@ -73,7 +73,7 @@ const Login = () => {
             </button>
           </form>
           <div className="mt-3 text-center">
-            Don't have an account? <Link to="/signup">Sign Up</Link>
+            Don't have an account? <Link to="/signup"><b>Sign Up</b></Link>
           </div>
         </div>
       </div>

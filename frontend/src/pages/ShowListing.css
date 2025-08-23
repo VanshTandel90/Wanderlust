@@ -259,3 +259,9 @@
   background-color: #f8f9fa;
   color: #6c757d;
 }
+
+.interested-btn {
+  margin-left: auto;
+  border-radius: 20px;
+  font-weight: 600;
+}

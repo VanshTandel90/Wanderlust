@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getListingById, createReview, deleteReview, deleteListing } from '../api/listings';
+import { getListingById, createReview, deleteReview, deleteListing, markListingInterested } from '../api/listings';
 import { useAuth } from '../context/AuthContext.jsx';
 import Map from '../components/Map.jsx';
 import './ShowListing.css';
@@ -36,6 +36,15 @@ const ShowListing = () => {
 
     fetchListing();
   }, [id, refreshKey]);
+
+  const handleInterestedClick = async () => {
+    try {
+      const response = await markListingInterested(id);
+      alert(response.message || "Your interest has been noted!");
+    } catch (error) {
+      alert(error.message || error.error || "Could not register interest. You may have already done so.");
+    }
+  };
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
@@ -152,6 +161,11 @@ const ShowListing = () => {
                     {cat}
                   </Link>
                 ))}
+                {!isOwner && user && (
+                  <button onClick={handleInterestedClick} className="btn btn-danger interested-btn">
+                    Interested
+                  </button>
+                )}
               </div>
             </div>
           </div>

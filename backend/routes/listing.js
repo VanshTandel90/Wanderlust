@@ -92,4 +92,7 @@ router.post("/predict-price", wrapAsync(async (req, res) => {
     }
 }));
 
+router.post("/:id/interested", isLoggedIn, wrapAsync(listingController.markInterested));
+
+
 module.exports=router

@@ -1,4 +1,5 @@
 const Listing = require("../models/listing")
+const User = require("../models/user"); 
 
 module.exports.index = async (req, res) => {
     try {
@@ -150,3 +151,46 @@ module.exports.destroyListing = async (req, res) => {
         res.status(500).json({ error: err.message })
     }
 }
+
+module.exports.markInterested = async (req, res) => {
+  const { id } = req.params; 
+  const interestedUser = req.user; 
+
+  const listing = await Listing.findById(id).populate("owner");
+  if (!listing) {
+    return res.status(404).json({ error: "Listing not found." });
+  }
+
+  const owner = listing.owner;
+
+  if (owner._id.equals(interestedUser._id)) {
+    return res.status(400).json({ error: "You cannot be interested in your own listing." });
+  }
+
+  const alreadyInterested = owner.buyers.some(
+    (buyer) =>
+      buyer.listingId.equals(id) &&
+      buyer.interestedUserId.equals(interestedUser._id)
+  );
+
+  if (alreadyInterested) {
+    return res.status(409).json({ message: "You have already shown interest in this listing." });
+  }
+
+
+  const newBuyerNotification = {
+    listingId: id,
+    listingTitle: listing.title,
+    interestedUserId: interestedUser._id,
+    interestedUserName: interestedUser.username,
+    interestedUserEmail: interestedUser.email,
+    interestedUserLocation: interestedUser.location,
+    interestedUserMobile: interestedUser.mobile,
+  };
+
+  await User.findByIdAndUpdate(owner._id, {
+    $push: { buyers: newBuyerNotification },
+  });
+
+  res.status(200).json({ message: "Interest registered successfully! The owner has been notified." });
+};

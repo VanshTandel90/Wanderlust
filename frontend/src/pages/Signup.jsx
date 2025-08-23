@@ -9,6 +9,7 @@ const Signup = () => {
     email: '',
     password: '',
     location: '',
+    mobile: '',
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -35,8 +36,8 @@ const Signup = () => {
 
   return (
     <div className="signup-container">
-      <div className="row mt-3">
-        <h1 className="col-12 col-md-6 offset-md-3">Sign Up for RentEasy</h1>
+      <div className="row ">
+        <h2 className="col-12 col-md-6 offset-md-3 pb-4">Sign Up</h2>
         <div className="col-12 col-md-6 offset-md-3">
           <form onSubmit={handleSubmit} noValidate>
             <div className="mb-3">
@@ -47,6 +48,19 @@ const Signup = () => {
                 type="text"
                 className="form-control"
                 value={formData.username}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label">Password</label>
+              <input
+                name="password"
+                id="password"
+                type="password"
+                className="form-control"
+                value={formData.password}
                 onChange={handleChange}
                 required
               />
@@ -66,7 +80,7 @@ const Signup = () => {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="location" className="form-label">Location (e.g., City, Country)</label>
+              <label htmlFor="location" className="form-label">Location</label>
               <input
                 name="location"
                 id="location"
@@ -80,14 +94,15 @@ const Signup = () => {
             </div>
 
             <div className="mb-3">
-              <label htmlFor="password" className="form-label">Password</label>
+              <label htmlFor="mobile" className="form-label">Mobile No.</label>
               <input
-                name="password"
-                id="password"
-                type="password"
+                name="mobile"
+                id="mobile"
+                type="tel" 
                 className="form-control"
-                value={formData.password}
+                value={formData.mobile}
                 onChange={handleChange}
+                placeholder="Enter your mobile number"
                 required
               />
             </div>
@@ -99,7 +114,7 @@ const Signup = () => {
             </button>
           </form>
           <div className="mt-3 text-center">
-            Already have an account? <Link to="/login">Log In</Link>
+            Already have an account? <Link to="/login"><b>Log In</b></Link>
           </div>
         </div>
       </div>

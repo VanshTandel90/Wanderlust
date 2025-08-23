@@ -36,3 +36,23 @@ export const logout = async () => {
     throw error.response?.data || error;
   }
 }; 
+
+export const getNotifications = async () => {
+  try {
+    const response = await api.get('/notifications');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching notifications:', error.response?.data || error.message);
+    throw error.response?.data || error;
+  }
+};
+
+export const deleteNotification = async (notificationId) => {
+  try {
+    const response = await api.delete(`/notifications/${notificationId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting notification:', error.response?.data || error.message);
+    throw error.response?.data || error;
+  }
+};

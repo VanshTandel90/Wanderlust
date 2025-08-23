@@ -10,8 +10,8 @@ module.exports.checkAuth = (req, res) => {
 
 module.exports.signup = async (req, res, next) => {
   try {
-    let { username, email, password, location } = req.body;
-    const newUser = new User({ email, username, location });
+    let { username, email, password, location, mobile } = req.body;
+    const newUser = new User({ email, username, location, mobile });
     const registeredUser = await User.register(newUser, password);
     req.login(registeredUser, (err) => {
       if (err) {
@@ -35,4 +35,17 @@ module.exports.logout = (req, res, next) => {
     }
     res.status(200).json({ message: "Successfully logged out" });
   });
+};
+
+module.exports.getNotifications = async (req, res) => {
+  const user = await User.findById(req.user._id);
+  res.status(200).json(user.buyers || []);
+};
+
+module.exports.deleteNotification = async (req, res) => {
+  const { notificationId } = req.params;
+  await User.findByIdAndUpdate(req.user._id, {
+    $pull: { buyers: { _id: notificationId } },
+  });
+  res.status(200).json({ message: "Notification removed successfully." });
 };

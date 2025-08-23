@@ -180,6 +180,16 @@ export const getNearbyListings = async () => {
   }
 };
 
+export const markListingInterested = async (id) => {
+  try {
+    const response = await api.post(`/listings/${id}/interested`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error marking interest for listing ${id}:`, error);
+    throw error.response?.data || error;
+  }
+};
+
 export default {
   getAllListings,
   getListingById,
@@ -191,4 +201,5 @@ export default {
   createReview,
   deleteReview,
   getNearbyListings,
+  markListingInterested,
 };

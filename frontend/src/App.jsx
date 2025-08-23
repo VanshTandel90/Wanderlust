@@ -4,6 +4,7 @@ import Footer from './components/Footer';
 import Listings from './pages/Listings';
 import SearchResults from './pages/SearchResults';
 import ShowListing from './pages/ShowListing';
+import Notifications from './pages/Notifications';
 import CreateListing from './pages/CreateListing';
 import UpdateListing from './pages/UpdateListing';
 import Signup from './pages/Signup';
@@ -27,7 +28,8 @@ function App() {
             <Route path="/listings/:id" element={<ShowListing />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
-            {/* More routes will be added as we develop other pages */}
+            <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </main>
         <Footer />

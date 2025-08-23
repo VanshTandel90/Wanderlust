@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { getNotifications } from '../api/users';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -8,7 +9,25 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const { user, logout, loading } = useAuth();
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (user) {
+        try {
+          const data = await getNotifications();
+          setNotifications(data);
+        } catch (error) {
+          console.error("Could not fetch navbar notifications");
+        }
+      } else {
+        setNotifications([]);
+      }
+    };
+    fetchNotifications();
+  }, [user]);
+
 
   const handleSearchChange = (e) => {
     setSearchInput(e.target.value);
@@ -75,6 +94,12 @@ const Navbar = () => {
             {!loading && (
               user ? (
                 <>
+                  <Link className="nav-link notification-link" to="/notifications">
+                    🔔
+                    {notifications.length > 0 && (
+                      <span className="notification-badge">{notifications.length}</span>
+                    )}
+                  </Link>
                   <span className="nav-link">Welcome, {user.username}!</span>
                   <button className="nav-link btn" onClick={handleLogout}><b>Log out</b></button>
                 </>
